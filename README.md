@@ -16,6 +16,7 @@ Anyone wishing to create a 4626-compliant vault adapter can build it and submit 
 5. *The adapter **MUST** either contain a provision to burn the first 1000 shares before general deposits are allowed, or if you choose to manually deploy it yourself, you must burn the first 1000 shares. Burning is defined as sending to the zero-address before anyone else deposits. 
 This is a **HARD** requirement that is necesarry to prevent loss-of-funds for users due to MEV attacks.
 
+*When building your own adapter we **highly** recommend starting from the Solmate-implementation, overriding functionality as needed. This can be accomplished by utilizing the `afterDeposit()` and `beforeWithdraw()` functionality to handle the actual interactions with the underlying vaults.
 
 Our goal is to provide not only increased functionality for Resonate pools, but to further push for the adoption of 4626 by releasing these adapters as public-goods.
 
