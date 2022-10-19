@@ -6,15 +6,19 @@ Anyone wishing to create a 4626-compliant vault adapter can build it and submit 
 
 1. The Adapter must comply completely with the 4626-Vault-Standard
 2. The adapter must expose the 4626-interface to the end-user, while providing the same functionality as an underlying defi-protocol.
-  Example: ABC Protocol Vault allows you to deposit tokens using the depositTokens(uint) function, and withdraw using the withdrawTokens(uint) function. The adapter should accept tokens through its mint and deposit functions, and then pass them to the underlying vault's deposit functionality
-The adapter should hold all of the shares given out by the underlying vault, instead issuing its own shares to those who deposit. If the vault is yUSDC, the adapter should hold all the yUSDC, giving its ownyaUSDC to the user.
+    1. Example: ABC Protocol Vault allows you to deposit tokens using the depositTokens(uint) function, and withdraw using the withdrawTokens(uint) function. The adapter should accept tokens through its mint and deposit functions, and then pass them to the underlying vault's deposit functionality.
+    2. The adapter should hold all of the shares given out by the underlying vault, instead issuing its own shares to those who deposit. If the vault is `yUSDC`, the adapter should hold all the `yUSDC`, giving its own `rsn8_yUSDC` to the user.
 
 3. The adapter should be permissionless, allowing anyone to interact outside of Resonate.
-Our goal is to provide not only increased functionality for Resonate pools, but to further push for the adoption of 4626 by releasing these adapters as public-goods.
 
 4. The adapter should not take any fees, but should be aware of any fees taken by the underlying yield-bearing-vault.
 
-5. All adapters will be open-sourced.
+5. *The adapter **MUST** either contain a provision to burn the first 1000 shares before general deposits are allowed, or if you choose to manually deploy it yourself, you must burn the first 1000 shares. Burning is defined as sending to the zero-address before anyone else deposits. 
+This is a **HARD** requirement that is necesarry to prevent loss-of-funds for users due to MEV attacks.
+
+
+Our goal is to provide not only increased functionality for Resonate pools, but to further push for the adoption of 4626 by releasing these adapters as public-goods.
+
 
 ## Required Tests
 
