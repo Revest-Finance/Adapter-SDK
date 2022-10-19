@@ -1,0 +1,28 @@
+{
+  "name": "adapter-sdk",
+  "version": "1.0.0",
+  "description": "Adapter-Repository for Partners of Resonate to build their own adapters",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "forge build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Revest-Finance/Adapter-SDK.git"
+  },
+  "author": "Josh Weintraub",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Revest-Finance/Adapter-SDK/issues"
+  },
+  "homepage": "https://github.com/Revest-Finance/Adapter-SDK#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "@rari-capital/solmate": "^6.4.0",
+    "i": "^0.3.7",
+    "npm": "^8.19.2"
+  }
+}
