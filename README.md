@@ -20,6 +20,8 @@ This is a **HARD** requirement that is necesarry to prevent loss-of-funds for us
 
 Our goal is to provide not only increased functionality for Resonate pools, but to further push for the adoption of 4626 by releasing these adapters as public-goods.
 
+You can find a skeleton with suggested methods for overriding in `contracts/adapters/BaseAdapter.sol`
+
 
 ## Required Tests
 
@@ -47,6 +49,8 @@ interface GenericAdapterTest {
     function testMiscViewMethods(uint amount) external;
 }
 ```
+
+You can find an example of what these tests might look like in `tests/foundry/ExampleTests.t.sol`, but suggest you modify them to fit the specifications of your adapter.
 
 ### testDeposit(uint256 amount)
 1. Test should allow a user to deposit amount of tokens into the vault successfully after approving the adapter to spend their tokens
