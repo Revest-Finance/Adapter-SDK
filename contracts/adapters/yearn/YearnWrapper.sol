@@ -54,20 +54,28 @@ contract YearnWrapper is ERC20, IVaultWrapper, IERC4626, Ownable, ReentrancyGuar
         return address(yVault);
     }
 
-    /// @dev Verifies that the yearn registry has "_target" recorded as the asset's latest vault
-    function migrate(address _target) external onlyOwner returns (address) {
-        // verify _target is a valid address
-        if(registry.latestVault(token) != _target) {
-            revert InvalidMigrationTarget();
-        }
+    
 
-        uint assets = yVault.withdraw(type(uint).max);
-        yVault = VaultAPI(_target);
+    /// @dev Verify that current Yearn vault is latest with Yearn registry. If not, migrate funds automatically
+    function migrate() external {
+        address newVault = registry.latestVault(token);
+        // Check if active yVault is latest yVault
+        if(newVault != address(yVault)) {
+            // If it is not, migrate the assets to the new yVault
+            IERC20 tokenContract = IERC20(token);
+            
+            // Update storage
+            VaultAPI oldVault = yVault;
+            yVault = VaultAPI(newVault);
 
-        // Redeposit want into target vault
-        yVault.deposit(assets);
+            // Withdraw all assets from old vault
+            uint assets = oldVault.withdraw(type(uint).max);
+            // Approve deposits to new yVault
+            tokenContract.safeApprove(newVault, assets);
 
-        return _target;
+            // Redeposit assets into target vault
+            yVault.deposit(assets);
+        }  
     }
 
     // NB: this number will be different from this token's totalSupply
@@ -95,6 +103,7 @@ contract YearnWrapper is ERC20, IVaultWrapper, IERC4626, Ownable, ReentrancyGuar
         uint256 assets, 
         address receiver
     ) public override nonReentrant returns (uint256 shares) {
+
         if(assets < MIN_DEPOSIT) {
             revert MinimumDepositNotMet();
         }
@@ -130,7 +139,7 @@ contract YearnWrapper is ERC20, IVaultWrapper, IERC4626, Ownable, ReentrancyGuar
         address receiver,
         address owner
     ) public override nonReentrant returns (uint256 shares) {
-        
+
         if(assets == 0) {
             revert NonZeroArgumentExpected();
         }
@@ -297,7 +306,6 @@ contract YearnWrapper is ERC20, IVaultWrapper, IERC4626, Ownable, ReentrancyGuar
 
         _token.safeTransferFrom(depositor, address(this), amount);
 
-
         _token.safeApprove(address(_vault), amount);
 
         uint256 beforeBal = _token.balanceOf(address(this));
@@ -384,7 +392,7 @@ contract YearnWrapper is ERC20, IVaultWrapper, IERC4626, Ownable, ReentrancyGuar
 
     function convertSharesToYearnShares(uint shares) internal view returns (uint yShares) {
         uint supply = totalSupply(); 
-        return supply == 0 ? shares : shares.mulDivUp(yVault.balanceOf(address(this)), totalSupply());
+        return supply == 0 ? shares : shares.mulDivUp(yVault.balanceOf(address(this)), supply);
     }
 
     function allowance(address owner, address spender) public view virtual override(ERC20,IERC4626) returns (uint256) {

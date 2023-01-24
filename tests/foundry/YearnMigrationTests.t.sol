@@ -43,7 +43,7 @@ contract YearnMigrationTests is Test {
         uint _preMigrateAdapterBal = vaultAPI.balanceOf(address(adapter));
         uint _preMigrateAliceBal = adapter.balanceOf(alice);
 
-        adapter.migrate(vault);
+        adapter.migrate();
 
         uint _postMigrateAdapterBal = vaultAPI.balanceOf(address(adapter));
         uint _postMigrateAliceBal = adapter.balanceOf(alice);
@@ -83,7 +83,7 @@ contract YearnMigrationTests is Test {
         uint _preMigrateAliceBal = adapter.balanceOf(alice);
         uint _preMigrateBobBal = adapter.balanceOf(bob);
 
-        adapter.migrate(vault);
+        adapter.migrate();
 
         uint _postMigrateAdapterBal = vaultAPI.balanceOf(address(adapter));
         uint _postMigrateAliceBal = adapter.balanceOf(alice);
@@ -113,15 +113,15 @@ contract YearnMigrationTests is Test {
         vm.stopPrank();
     }
 
-    function testFail_evil_migrate() public {
-        address evil = address(13);
-        startHoax(evil, evil);
-        adapter.migrate(vault);
-    }
+    // function testFail_evil_migrate() public {
+    //     address evil = address(13);
+    //     startHoax(evil, evil);
+    //     adapter.migrate();
+    // }
 
-    function testFail_invalid_migrate() public {
-        startHoax(alice, alice);
-        adapter.migrate(address(10));
-    }
+    // function testFail_invalid_migrate() public {
+    //     startHoax(alice, alice);
+    //     adapter.migrate();
+    // }
 
 }
