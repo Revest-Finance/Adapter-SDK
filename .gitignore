@@ -1,3 +1,11 @@
 cache/*
 out/*
 node_modules/*
+
+tests/cache/
+tests/out/
+tests/script/
+tests/src/
+tests/test/
+
+lib/*
