@@ -26,8 +26,8 @@ contract BeefyWrapper is YearnV1_4626 {
 
     constructor(address _vault, address _dustWallet)
         ERC20(
-            "Beefy-4646-Adapter",
-            "Beefy-4646"
+            string(abi.encodePacked(BeefyAPI(_vault).name(), "Beefy-4626-Adapter")),
+            string(abi.encodePacked(BeefyAPI(_vault).name(), "-Beefy-4626"))
         )
         YearnV1_4626(_dustWallet)
     {
@@ -87,7 +87,7 @@ contract BeefyWrapper is YearnV1_4626 {
         BeefyAPI _vault = yVault;
         {
             IBeefyStrat strat = IBeefyStrat(_vault.strategy());
-            uint fee = strat.withdrawalFee();
+            uint fee = getFee(strat);
             uint DIVISOR = strat.WITHDRAWAL_MAX();
             adjustedAmount = assets.mulDivUp(DIVISOR, DIVISOR - fee);
         }
@@ -97,7 +97,7 @@ contract BeefyWrapper is YearnV1_4626 {
         BeefyAPI _vault = yVault;
         {
             IBeefyStrat strat = IBeefyStrat(_vault.strategy());
-            uint fee = strat.withdrawalFee();
+            uint fee = getFee(strat);
             uint DIVISOR = strat.WITHDRAWAL_MAX();
             assets -= assets.mulDivUp(fee, DIVISOR);
         }
@@ -121,4 +121,11 @@ contract BeefyWrapper is YearnV1_4626 {
         return token;
     }
 
+    function getFee(IBeefyStrat strat) private view returns (uint fee) {
+        try strat.withdrawalFee() returns (uint withdrawal) {
+            fee = withdrawal;
+        } catch {
+            fee = strat.withdrawFee();
+        }
+    }
 }
